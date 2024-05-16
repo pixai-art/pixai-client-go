@@ -1,3 +1,14 @@
+# PixAI Client Go
+
+### Installation
+
+```bash
+go get github.com/pixai-art/pixai-client-go
+```
+
+### Usage
+
+```go
 package main
 
 import (
@@ -57,3 +68,5 @@ func main() {
 		fmt.Printf("Task: %+v\n", task)
 	}
 }
+
+```
