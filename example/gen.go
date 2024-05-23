@@ -22,10 +22,6 @@ func main() {
 		"height":  512,
 		"prompts": "miku",
 		"modelId": "1648918127446573124",
-
-		// Specific the priority value as 1000 to make sure the task will be processed immediately.
-		// This is a historical legacy issue. If this parameter is not passed, the public queue will be used for queuing. We will set high priority tasks as the default value later.
-		"priority": 1000,
 	}
 
 	var taskId string

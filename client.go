@@ -55,6 +55,7 @@ func (p *PixAIClient) SetUnmarshalJSON(unmarshal UnmarshalJSON) *PixAIClient {
 
 func (p *PixAIClient) Do(req *http.Request) (*http.Response, error) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", p.apiKey))
+	req.Header.Set("User-Agent", "PixAIClientGo/1.0.0")
 	return p.httpClient.Do(req)
 }
 

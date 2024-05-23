@@ -11,12 +11,7 @@ type MediaBase struct {
 		Variant string `json:"variant"`
 		Url     string `json:"url"`
 	} `json:"urls"`
-	ImageType    *string  `json:"imageType"`
-	FileUrl      *string  `json:"fileUrl"`
-	Duration     *float64 `json:"duration"`
-	ThumbnailUrl *string  `json:"thumbnailUrl"`
-	HlsUrl       *string  `json:"hlsUrl"`
-	Size         *int     `json:"size"`
+	ImageType *string `json:"imageType"`
 }
 
 type TaskBase struct {
