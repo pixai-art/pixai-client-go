@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"mime"
+	"os"
 
 	pixai_client "github.com/pixai-art/pixai-client-go"
 )
@@ -10,7 +12,7 @@ import (
 func main() {
 	// Initialize the client
 	client := pixai_client.NewPixAIClient().
-		SetApiKey("replace to your api keys").
+		SetApiKey(os.Getenv("API_KEY")).
 		Init()
 
 	ctx := context.Background()
@@ -34,6 +36,23 @@ func main() {
 		fmt.Printf("Task: %+v\n", task)
 		fmt.Printf("Error: %+v\n", err)
 		taskId = task.Id
+
+		media, err := client.GetMediaFromTask(ctx, task)
+		if err != nil {
+			fmt.Printf("Error: %+v\n", err)
+			return
+		}
+		file, mimeType, err := client.DownloadMedia(ctx, media[0])
+		if err != nil {
+			fmt.Printf("Error: %+v\n", err)
+			return
+		}
+		ext, _ := mime.ExtensionsByType(mimeType)
+		err = os.WriteFile("output"+ext[0], file, 0644)
+		if err != nil {
+			fmt.Printf("Error: %+v\n", err)
+			return
+		}
 	}
 
 	{

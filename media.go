@@ -28,6 +28,12 @@ const (
 	defaultProvider  = MediaProvider_S3
 )
 
+type ImageVariant string
+
+const (
+	ImageVariant_Public ImageVariant = "PUBLIC"
+)
+
 type UploadMediaInput struct {
 	Type       MediaType     `json:"type"`
 	Provider   MediaProvider `json:"provider"`
@@ -137,4 +143,40 @@ func (p *PixAIClient) UploadMediaUrl(ctx context.Context, url string) (*MediaBas
 		return nil, fmt.Errorf("failed to read body: %v", err)
 	}
 	return p.UploadMediaFile(ctx, bytes.NewReader(body), res.Header.Get("Content-Type"))
+}
+
+func (p *PixAIClient) GetPublicUrl(media *MediaBase) string {
+	for _, url := range media.Urls {
+		if ImageVariant(url.Variant) == ImageVariant_Public {
+			return url.Url
+		}
+	}
+	return ""
+}
+
+func (p *PixAIClient) DownloadMedia(ctx context.Context, media *MediaBase) (file []byte, mimeType string, err error) {
+	if media == nil {
+		err = fmt.Errorf("media is nil")
+		return
+	}
+	url := p.GetPublicUrl(media)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return
+	}
+	res, err := p.httpClient.Do(req)
+	if err != nil {
+		return
+	}
+	if res.StatusCode > 299 {
+		err = fmt.Errorf("unexpected status code on download media. status=%d", res.StatusCode)
+		return
+	}
+	defer res.Body.Close()
+	mimeType = res.Header.Get("Content-Type")
+	file, err = io.ReadAll(res.Body)
+	if err != nil {
+		return
+	}
+	return
 }
