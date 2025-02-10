@@ -7,8 +7,8 @@ import (
 )
 
 func (p *PixAIClient) getMediaFromBatchItem(ctx context.Context, item any) (*MediaBase, error) {
-	o, ok := item.(JSONObject)
-	if !ok {
+	o := ToJSONObject(item)
+	if o == nil {
 		return nil, fmt.Errorf("unexpected item format")
 	}
 

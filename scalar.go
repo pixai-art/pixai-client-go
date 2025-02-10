@@ -2,6 +2,16 @@ package pixai_client
 
 type JSONObject map[string]any
 
+func ToJSONObject(o any) JSONObject {
+	switch s := o.(type) {
+	case JSONObject:
+		return s
+	case map[string]any:
+		return JSONObject(s)
+	}
+	return nil
+}
+
 func (o *JSONObject) GetGraphQLType() string { return "JSONObject" }
 
 func (o *JSONObject) GetString(key string) string {
@@ -21,9 +31,7 @@ func (o *JSONObject) GetObject(key string) JSONObject {
 		return nil
 	}
 	if v, ok := (*o)[key]; ok {
-		if s, ok := v.(JSONObject); ok {
-			return s
-		}
+		return ToJSONObject(v)
 	}
 	return nil
 }
